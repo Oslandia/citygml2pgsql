@@ -13,7 +13,7 @@ citygml2pgsql -l mycity.xml
 Will list the LOD-qualified geometry types found for buildings, several LODs can be present.
 
 ```
-itygml2pgsql mycity.xml LOD SRID GEOMETRY_COLUMN TABLE_NAME
+citygml2pgsql mycity.xml LOD SRID GEOMETRY_COLUMN TABLE_NAME
 ```
 
 Will generate on stdout a serie of insert statements of PolyhedralSurface in column GEOMETRY_COLUMN of table TABLE_NAME, one surface per building. The table must exist prior to insertion.
