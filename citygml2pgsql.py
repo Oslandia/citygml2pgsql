@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # coding: utf-8
-"""convert citygml buildings to postressql statements for insersion in table
+"""convert citygml buildings to PostreSQL statements for insersion in table
 
 USAGE
     citygml2pgsql -l file1.xml [file2.xml ...] 
