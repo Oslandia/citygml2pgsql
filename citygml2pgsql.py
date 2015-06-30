@@ -106,8 +106,8 @@ if __name__ == '__main__':
         exit(0)
 
     if len(sys.argv) >= 3 and sys.argv[1] in ["-l", "--list"]:
-        srs = set()
         for filename in sys.argv[2:]:
+            srs = set()
             print "In", filename
             with open(filename) as xml:
                 for line in xml:
