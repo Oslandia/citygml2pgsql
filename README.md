@@ -89,7 +89,7 @@ First release was funded by European Union (FEDER related to the e-PLU project) 
 License
 =======
 
-This work is free software and licenced under the GNU GPL version 2 or any later version.
+This work is free software and licenced under the MIT licence.
 See LICENSE file.
 
 
