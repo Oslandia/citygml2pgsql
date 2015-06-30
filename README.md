@@ -27,6 +27,8 @@ Credits
 
 This plugin has been developed by Oslandia ( http://www.oslandia.com ).
 
+First release was funded by European Union (FEDER related to the e-PLU project) and by Oslandia.
+
 License
 =======
 
