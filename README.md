@@ -1,7 +1,7 @@
 A CityGML to SQL converter
 ==========================
 
-citygml2pgsql converts buildings found in a CityGML file to PolyhedralSurface insert statements aimed at PosgresSQL/PostGIS.
+citygml2pgsql converts buildings found in a CityGML file to MultiPolygon insert statements aimed at PosgresSQL/PostGIS.
 
 Usage
 ======
@@ -16,7 +16,7 @@ Will list the LOD-qualified geometry types found for buildings, several LODs can
 citygml2pgsql mycity.xml LOD SRID GEOMETRY_COLUMN TABLE_NAME
 ```
 
-Will generate on stdout a serie of insert statements of PolyhedralSurface in column GEOMETRY_COLUMN of table TABLE_NAME, one surface per building. The table must exist prior to insertion.
+Will generate on stdout a serie of insert statements of MultiPolygon in column GEOMETRY_COLUMN of table TABLE_NAME, one surface per building. The table must exist prior to insertion.
 
 The LOD (in [0,1,2,3]) is mandatory and must match one of the LODs displayed with the ```-l``` option.
 
@@ -63,9 +63,9 @@ Now we have the information we need to create our tables in a test database:
 ```
 createdb test_citygml
 psql test_citygml -c "CREATE EXTENSION postgis"
-psql test_citygml -c "CREATE TABLE lyon(gid SERIAL PRIMARY KEY, geom GEOMETRY('POLYHEDRALSURFACEZ', 3946))"
-psql test_citygml -c "CREATE TABLE levkreuz(gid SERIAL PRIMARY KEY, geom GEOMETRY('POLYHEDRALSURFACEZ', 31466))"
-psql test_citygml -c "CREATE TABLE berlin(gid SERIAL PRIMARY KEY, geom GEOMETRY('POLYHEDRALSURFACEZ', 3068))"
+psql test_citygml -c "CREATE TABLE lyon(gid SERIAL PRIMARY KEY, geom GEOMETRY('MULTIPOLYGONZ', 3946))"
+psql test_citygml -c "CREATE TABLE levkreuz(gid SERIAL PRIMARY KEY, geom GEOMETRY('MULTIPOLYGONZ', 31466))"
+psql test_citygml -c "CREATE TABLE berlin(gid SERIAL PRIMARY KEY, geom GEOMETRY('MULTIPOLYGONZ', 3068))"
 ```
 
 And we can populate our tables:

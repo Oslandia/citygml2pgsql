@@ -80,7 +80,7 @@ def citygml2pgsql(filename, table_name, srid, lod, geometry_column="geom"):
 
     root = etree.parse(filename)
 
-    #generate a polyhedral surface per building
+    #generate a multipolygon surface per building
 
     geom_types = buildingGeomTypes(root, [lod])
 
@@ -93,7 +93,7 @@ def citygml2pgsql(filename, table_name, srid, lod, geometry_column="geom"):
                 if polys:
                     print "INSERT INTO "+table_name+"("+geometry_column +") VALUES ("\
                           "'SRID="+str(srid)+\
-                            "; POLYHEDRALSURFACE("+",".join(polys)+\
+                            "; MULTIPOLYGON("+",".join(polys)+\
                             ")'::geometry );"
                 else:
                     sys.stderr.write( 'degenerated '+geom+' gml:id="'+\
