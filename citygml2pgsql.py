@@ -4,7 +4,7 @@
 
 USAGE
     citygml2pgsql -l file1.xml [file2.xml ...] 
-    citygml2pgsql file1.xml [file2.xml ...] <lod> srid geometry_column table_name
+    citygml2pgsql file1.xml [file2.xml ...] <lod> srid geometry_column building_id_column table_name
 
     <lod> can be 0, 1, 2, 3
     srid
@@ -74,30 +74,33 @@ def buildingGeomTypes(root, lods=range(3)):
     return types
 
 
-def citygml2pgsql(filename, table_name, srid, lod, geometry_column="geom"):
+def citygml2pgsql(filename, table_name, srid, lod, geometry_column="geom", building_id_column="building_id"):
     if not os.path.exists(filename):
         raise RuntimeError("error: cannot find "+filename)
 
     root = etree.parse(filename)
 
-    #generate a polyhedral surface per building
+    #generate a multipolygon surface per building
 
     geom_types = buildingGeomTypes(root, [lod])
 
     for building in root.iter(fullName("Building", root)):
+    	building_id = building.attrib["{http://www.opengis.net/gml}id"]
+    	building_polys = []
         for geom_type in geom_types:
             for geom in building.iter(geom_type):
                 dim = int(geom.get("srsDimension")) if geom.get("srsDimension") else None
                 polys = filter(None, [gmlPolygon2wkt(poly, dim) \
                             for poly in geom.iter(fullName("Polygon", building))])
-                if polys:
-                    print "INSERT INTO "+table_name+"("+geometry_column +") VALUES ("\
-                          "'SRID="+str(srid)+\
-                            "; POLYHEDRALSURFACE("+",".join(polys)+\
-                            ")'::geometry );"
-                else:
-                    sys.stderr.write( 'degenerated '+geom+' gml:id="'+\
-                            geom.get("{http://www.opengis.net/gml}id")+'"\n')
+                building_polys = building_polys + polys
+        if len(building_polys) != 0:
+            print "INSERT INTO "+table_name+"("+geometry_column + "," + building_id_column + ") VALUES ("\
+                  "'SRID="+str(srid)+\
+                    "; MULTIPOLYGON("+",".join(building_polys)+\
+                    ")'::geometry, '" + str(building_id) + "' );"
+        else:
+            sys.stderr.write( 'degenerated '+geom+' gml:id="'+\
+                    geom.get("{http://www.opengis.net/gml}id")+'"\n')
 
 if __name__ == '__main__':
     
@@ -126,10 +129,11 @@ if __name__ == '__main__':
         exit(1)
 
     table_name = sys.argv[-1]
-    geometry_column = sys.argv[-2]
-    srid = int(sys.argv[-3])
-    lod = int(sys.argv[-4])
-    for filename in sys.argv[1:-4]:
+    building_id_column = sys.argv[-2]
+    geometry_column = sys.argv[-3]
+    srid = int(sys.argv[-4])
+    lod = int(sys.argv[-5])
+    for filename in sys.argv[1:-5]:
         sys.stderr.write("converting "+filename+"\n")
-        citygml2pgsql(filename, table_name, srid, lod, geometry_column)
+        citygml2pgsql(filename, table_name, srid, lod, geometry_column, building_id_column)
 
